@@ -8,6 +8,7 @@
 
 import UIKit
 import VK_ios_sdk
+import SafariServices
 
 class ViewController: UITableViewController, VKSdkDelegate,VKSdkUIDelegate, UISearchBarDelegate, UISearchControllerDelegate{
     let Scope = ["video"]
@@ -56,8 +57,6 @@ class ViewController: UITableViewController, VKSdkDelegate,VKSdkUIDelegate, UISe
         searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchBar.placeholder = "Search"
-        searchController.becomeFirstResponder()
-        
         navigationItem.searchController = searchController
         searchController.searchBar.returnKeyType = .done
         searchController.searchBar.delegate = self
@@ -74,7 +73,6 @@ class ViewController: UITableViewController, VKSdkDelegate,VKSdkUIDelegate, UISe
                             print("все ок")
                         } else {
                             print("войди")
-
                                 VKSdk.authorize(self.Scope)
                         }
             return
@@ -102,12 +100,14 @@ class ViewController: UITableViewController, VKSdkDelegate,VKSdkUIDelegate, UISe
         for i in 0...video.count-1{
             let current = video[i] as! NSDictionary
             print(current)
-            let image = UIImage(data: try! Data(contentsOf: URL(string:(current["photo_320"] as! String))!))
+            DispatchQueue.main.async {
+                let image = UIImage(data: try! Data(contentsOf: URL(string:(current["photo_320"] as! String))!))
             let new = Video(title: current["title"] as! String,
                             duration: current["duration"] as! Int,
                             picture: image!,
                             urlVid: URL(string: current["player"] as! String)!)
             self.videos.append(new)
+            }
             print("добавил \(i)")
         }
         print("получил видео")
@@ -145,9 +145,11 @@ class ViewController: UITableViewController, VKSdkDelegate,VKSdkUIDelegate, UISe
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selectedVideo = videos[indexPath.row]
-        let PlayerVC = PlayerViewController()
-        PlayerVC.video = selectedVideo
-        navigationController?.pushViewController(PlayerVC, animated: true)
+        let SafariVC = SFSafariViewController(url: selectedVideo.urlVid)
+        present(SafariVC, animated: true, completion: nil)
+//        let PlayerVC = PlayerViewController()
+//        PlayerVC.video = selectedVideo
+//        navigationController?.pushViewController(PlayerVC, animated: true)
         
     }
     
@@ -163,7 +165,9 @@ extension ViewController : UISearchResultsUpdating{
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         self.videos = []
         self.offset = 0
-        getVideo(q: searchBar.text! ,offset: self.offset )
+        DispatchQueue.main.async {
+            self.getVideo(q: searchBar.text! ,offset: self.offset )
+        }
 //        self.tableView.reloadData()
     }
 }

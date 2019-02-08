@@ -20,7 +20,7 @@ class VideoCell : UITableViewCell{
         }else if hours==0 {
             time = "\(minutes)м\(sec)с"
         }else{
-            time = "\(hours)м\(minutes)м\(sec)с"
+            time = "\(hours)ч\(minutes)м\(sec)с"
         }
 //     print(time)
     }
@@ -58,8 +58,8 @@ class VideoCell : UITableViewCell{
        
         
         videoImage.anchor(top: topAnchor, left: leftAnchor, bottom: bottomAnchor, right: nil, paddingTop: 0, paddingLeft: 10, paddingBottom: 0, paddingRight: 0, width: 90, height: 90, enableInsets: false)
-        videoTitleLabel.anchor(top: topAnchor, left: videoImage.rightAnchor, bottom: nil, right: nil, paddingTop: 20, paddingLeft: 10, paddingBottom: 0, paddingRight: 0, width: frame.size.width / 2, height: 0, enableInsets: false)
-        videoDuration.anchor(top: videoTitleLabel.bottomAnchor, left: videoImage.rightAnchor, bottom: nil, right: nil, paddingTop: 0, paddingLeft: 10, paddingBottom: 0, paddingRight: 0, width: frame.size.width / 2, height: 0, enableInsets: false)
+        videoTitleLabel.anchor(top: topAnchor, left: videoImage.rightAnchor, bottom: nil, right: nil, paddingTop: 20, paddingLeft: 10, paddingBottom: 0, paddingRight: 0, width: frame.size.width / 1.2 , height: 0, enableInsets: false)
+        videoDuration.anchor(top: videoTitleLabel.bottomAnchor, left: videoImage.rightAnchor, bottom: nil, right: nil, paddingTop: 0, paddingLeft: 10, paddingBottom: 0, paddingRight: 0, width: frame.size.width / 1.2, height: 0, enableInsets: false)
     }
     
     required init?(coder aDecoder: NSCoder) {
