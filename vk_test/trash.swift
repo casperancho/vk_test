@@ -131,3 +131,14 @@ import Foundation
 //    }
 //    
 //}
+
+
+
+//http://178.162.205.104/download/?title=.webm&url=https%3A%2F%2Fcs500600.vkuservideo.net%2F17%2Fu102402741%2Fvideos%2F9cd67a583a.480.mp4%3Fextra%3D7hQNk8EbdToFxkSn2zOguNtYG4w1vtgNRmjUnvpASg29obuS4_hZpXz1Jk6BqX6nWL3if4UejOg323WENb62MNBuW5X1t8gFlbfD-9Iz8Lh1IgWEVs_90sEvqHmjA-7S_FY-3tFRajU
+//
+//https://vk.com/video_ext.php?oid=-30316056&id=456296813&hash=d1a1540d069f8f82&__ref=vk.api&api_hash=15496506594c3494782a643c491b_GU2TENRXGE2Q
+//
+//
+//http://s10.savefrom.net/media/3308071985/24083137f10a4ddab829684ac22a2899/.webm.mp4
+//https://vk.com/video_ext.php?oid=-30316056&id=456282357&hash=47a410683a74aa76&__ref=vk.api&api_hash=1549650659d648d1185a49a3bc36_GU2TENRXGE2Q
+

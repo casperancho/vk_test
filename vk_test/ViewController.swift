@@ -10,16 +10,13 @@ import UIKit
 import VK_ios_sdk
 import SafariServices
 
-class ViewController: UITableViewController, VKSdkDelegate,VKSdkUIDelegate, UISearchBarDelegate, UISearchControllerDelegate{
+class ViewController: UITableViewController, VKSdkDelegate,VKSdkUIDelegate, UISearchBarDelegate, UISearchControllerDelegate, UITextFieldDelegate{
     let Scope = ["video"]
     var vk_app_id = "6848921"
     var videos : [Video] = []
-    var videoCount = 0
-    let testImage = UIImage()
     let cellId = "vid"
     var offset = 0
     let count = 40
-    var loadMoreStatus = false
     var q = ""
     
     func vkSdkShouldPresent(_ controller: UIViewController!) {
@@ -46,21 +43,34 @@ class ViewController: UITableViewController, VKSdkDelegate,VKSdkUIDelegate, UISe
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.title = "VK Video"
-        navigationController?.navigationBar.prefersLargeTitles = true
+        let searchIn = UITextField()
+        searchIn.becomeFirstResponder()
+        searchIn.text = "Search"
+        searchIn.returnKeyType = .done
+        searchIn.delegate = self
+        navigationItem.titleView = searchIn
+        if #available(iOS 11.0, *) {
+            navigationController?.navigationBar.prefersLargeTitles = true
+        } else {
+            // Fallback on earlier versions
+        }
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Logout", style: .plain, target: self,
                                                             action: #selector(logOut(_:)))
         tableView.register(VideoCell.self, forCellReuseIdentifier: cellId)
         
-        //поиск
-        let searchController = UISearchController(searchResultsController: nil)
-        searchController.searchResultsUpdater = self
-        searchController.obscuresBackgroundDuringPresentation = false
-        searchController.searchBar.placeholder = "Search"
-        navigationItem.searchController = searchController
-        searchController.searchBar.returnKeyType = .done
-        searchController.searchBar.delegate = self
-        definesPresentationContext = true
+        //поиск searchbar 11+
+//        let searchController = UISearchController(searchResultsController: nil)
+//        searchController.searchResultsUpdater = self
+//        searchController.obscuresBackgroundDuringPresentation = false
+//        searchController.searchBar.placeholder = "Search"
+//        if #available(iOS 11.0, *) {
+//            navigationItem.searchController = searchController
+//        } else {
+//            // Fallback on earlier versions
+//        }
+//        searchController.searchBar.returnKeyType = .done
+//        searchController.searchBar.delegate = self
+//        definesPresentationContext = true
         
         
         
@@ -80,12 +90,24 @@ class ViewController: UITableViewController, VKSdkDelegate,VKSdkUIDelegate, UISe
 
     }
     
+    //обработка нажатия .done
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        self.videos = []
+        self.offset = 0
+        DispatchQueue.main.async {
+            self.getVideo(q: textField.text! ,offset: self.offset )
+        }
+        textField.resignFirstResponder()
+        return true
+    }
+    
     //получение ответа на запрос
     func getVideo(q: String, offset: Int){
         self.q = q
+        let token = VKSdk.accessToken()
         let video : VKRequest = VKApi.request(withMethod: "video.search",
                                               andParameters: [ "q":String(q), "offset":String(offset),
-                                                               "count":String(count), "sort":"2"])
+                                                               "count":String(count), "sort":"2"],andHttpMethod: "&access_token=\(token)&v=5.92")
         video.execute(resultBlock: { (response) -> Void in
             let videos = response?.json as! NSDictionary
             let items = videos["items"] as! NSArray
@@ -147,13 +169,13 @@ class ViewController: UITableViewController, VKSdkDelegate,VKSdkUIDelegate, UISe
         let selectedVideo = videos[indexPath.row]
         let SafariVC = SFSafariViewController(url: selectedVideo.urlVid)
         present(SafariVC, animated: true, completion: nil)
+        
+        //вызов отдельного контроллера для него нужны ссылки из files. у меня не вышло, но я работаю над этим :)
 //        let PlayerVC = PlayerViewController()
 //        PlayerVC.video = selectedVideo
 //        navigationController?.pushViewController(PlayerVC, animated: true)
         
     }
-    
-
 }
 
 
@@ -162,13 +184,12 @@ extension ViewController : UISearchResultsUpdating{
     func updateSearchResults(for searchController: UISearchController) {
 //        print(searchController.searchBar.text!)
     }
-    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {           //4work w searchBar
         self.videos = []
         self.offset = 0
         DispatchQueue.main.async {
             self.getVideo(q: searchBar.text! ,offset: self.offset )
         }
-//        self.tableView.reloadData()
     }
 }
 

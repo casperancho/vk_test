@@ -20,6 +20,12 @@ class PlayerViewController : UIViewController{
 //        self.view.addSubview(infoLabel)
 //        infoLabel.backgroundColor = .red
         let url = video.urlVid
+//        let assets = AVURLAsset(url: url!, options: nil)
+//        let playMe = AVPlayerItem(asset: assets)
+//        playMe.addObserver(self, forKeyPath: "status", options: NSKeyValueObservingOptions(rawValue: NSKeyValueObservingOptions.initial.rawValue | NSKeyValueObservingOptions.new.rawValue), context: nil)
+//        var playER = AVPlayer.init(playerItem: playMe)
+//        playER.play()
+        
         let player = AVPlayer(url: url)
         let avpCon = AVPlayerViewController()
         avpCon.player = player
