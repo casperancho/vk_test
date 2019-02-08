@@ -49,6 +49,7 @@ class ViewController: UITableViewController, VKSdkDelegate,VKSdkUIDelegate, UISe
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Logout", style: .plain, target: self, action: #selector(logOut(_:)))
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellId)
         
+        //поиск
         let searchController = UISearchController(searchResultsController: nil)
         searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
@@ -56,7 +57,6 @@ class ViewController: UITableViewController, VKSdkDelegate,VKSdkUIDelegate, UISe
         navigationItem.searchController = searchController
         searchController.searchBar.returnKeyType = .done
         searchController.searchBar.delegate = self
-        
         definesPresentationContext = true
         
         let sdk = VKSdk.initialize(withAppId: self.vk_app_id)
@@ -66,12 +66,10 @@ class ViewController: UITableViewController, VKSdkDelegate,VKSdkUIDelegate, UISe
             error: Error?) ->Void in
             if state == .authorized {
                             print("все ок")
-//                            self.getId()
                         } else {
                             print("войди")
-//                            DispatchQueue.main.async {
+
                                 VKSdk.authorize(self.Scope)
-//                            }
                         }
             return
                     })
@@ -140,7 +138,9 @@ extension ViewController : UISearchResultsUpdating{
 //        print(searchController.searchBar.text!)
     }
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        self.videos = []
         getVideo(q: searchBar.text!)
+        self.tableView.reloadData()
     }
 }
 
