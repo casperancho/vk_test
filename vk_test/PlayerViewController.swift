@@ -12,7 +12,7 @@ import AVKit
 
 
 class PlayerViewController : UIViewController{
-    var video = Video()
+    var video = Video(title: "", duration: 0, picture: UIImage(), urlVid: URL(fileURLWithPath: ""))
     override func viewDidLoad() {
         self.view.backgroundColor = .white
         super.viewDidLoad()

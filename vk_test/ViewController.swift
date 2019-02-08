@@ -49,13 +49,15 @@ class ViewController: UITableViewController, VKSdkDelegate,VKSdkUIDelegate, UISe
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Logout", style: .plain, target: self,
                                                             action: #selector(logOut(_:)))
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellId)
+        tableView.register(VideoCell.self, forCellReuseIdentifier: cellId)
         
         //поиск
         let searchController = UISearchController(searchResultsController: nil)
         searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchBar.placeholder = "Search"
+        searchController.becomeFirstResponder()
+        
         navigationItem.searchController = searchController
         searchController.searchBar.returnKeyType = .done
         searchController.searchBar.delegate = self
@@ -99,9 +101,11 @@ class ViewController: UITableViewController, VKSdkDelegate,VKSdkUIDelegate, UISe
     func addingVideo(video: NSArray){
         for i in 0...video.count-1{
             let current = video[i] as! NSDictionary
+            print(current)
+            let image = UIImage(data: try! Data(contentsOf: URL(string:(current["photo_320"] as! String))!))
             let new = Video(title: current["title"] as! String,
                             duration: current["duration"] as! Int,
-                            picture: URL(string:(current["photo_320"] as! String))!,
+                            picture: image!,
                             urlVid: URL(string: current["player"] as! String)!)
             self.videos.append(new)
             print("добавил \(i)")
@@ -122,17 +126,19 @@ class ViewController: UITableViewController, VKSdkDelegate,VKSdkUIDelegate, UISe
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if indexPath.row == videos.count-8{
-            let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath)
+        if indexPath.row == videos.count-10{
+            let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! VideoCell
             let info = videos[indexPath.row]
-            cell.textLabel?.text = "\(indexPath.row) \(info.title)"
+            cell.video = info
             self.offset += self.count
-            getVideo(q: self.q, offset: self.offset)
+            DispatchQueue.main.async {
+                self.getVideo(q: self.q, offset: self.offset)
+            }
             return cell
         }else{
-            let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath)
+            let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! VideoCell
             let info = videos[indexPath.row]
-            cell.textLabel?.text = "\(indexPath.row) \(info.title)"
+            cell.video = info
             return cell
         }
     }
