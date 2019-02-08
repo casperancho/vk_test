@@ -16,9 +16,10 @@ class ViewController: UITableViewController, VKSdkDelegate,VKSdkUIDelegate, UISe
     var videoCount = 0
     let testImage = UIImage()
     let cellId = "vid"
-    var offset = 1
+    var offset = 0
     let count = 40
-    
+    var loadMoreStatus = false
+    var q = ""
     
     func vkSdkShouldPresent(_ controller: UIViewController!) {
         self.present(controller, animated: true, completion: nil)
@@ -59,6 +60,8 @@ class ViewController: UITableViewController, VKSdkDelegate,VKSdkUIDelegate, UISe
         searchController.searchBar.delegate = self
         definesPresentationContext = true
         
+        
+        
         let sdk = VKSdk.initialize(withAppId: self.vk_app_id)
         sdk!.register(self)
         sdk?.uiDelegate = self
@@ -76,9 +79,9 @@ class ViewController: UITableViewController, VKSdkDelegate,VKSdkUIDelegate, UISe
 
     }
     
-
-    func getVideo(q:String){
-        
+    //получение ответа на запрос
+    func getVideo(q: String, offset: Int){
+        self.q = q
         let video : VKRequest = VKApi.request(withMethod: "video.search",
                                               andParameters: [ "q":String(q), "offset":String(offset), "count":String(count), "sort":"2"])
         video.execute(resultBlock: { (response) -> Void in
@@ -90,7 +93,7 @@ class ViewController: UITableViewController, VKSdkDelegate,VKSdkUIDelegate, UISe
         })
         
     }
-    
+    //добавление видео в массив
     func addingVideo(video: NSArray){
         for i in 0...video.count-1{
             let current = video[i] as! NSDictionary
@@ -102,7 +105,9 @@ class ViewController: UITableViewController, VKSdkDelegate,VKSdkUIDelegate, UISe
             print("добавил \(i)")
         }
         print("получил видео")
-        self.tableView.reloadData()
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
     }
     
     @objc func logOut(_ button:UIBarButtonItem!){
@@ -110,24 +115,25 @@ class ViewController: UITableViewController, VKSdkDelegate,VKSdkUIDelegate, UISe
         print("пока")
     }
     
-    @IBOutlet weak var testinImage: UIImageView!
-    @IBAction func forphoto(_ sender: Any) {
-        let current = videos[0]
-        print(current.picture)
-        DispatchQueue.main.async {
-            let data = try? Data(contentsOf: current.picture)
-            self.testinImage.image = UIImage(data: data!)
-        }
-    }
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return videos.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath)
-        let info = videos[indexPath.row]
-        cell.textLabel?.text = "\(indexPath.row) \(info.title)"
-        return cell
+        if indexPath.row == videos.count-8{
+            let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath)
+            let info = videos[indexPath.row]
+            cell.textLabel?.text = "\(indexPath.row) \(info.title)"
+            self.offset += self.count
+            getVideo(q: self.q, offset: self.offset)
+            return cell
+        }else{
+            let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath)
+            let info = videos[indexPath.row]
+            cell.textLabel?.text = "\(indexPath.row) \(info.title)"
+            return cell
+        }
+        
     }
     
 }
@@ -139,8 +145,10 @@ extension ViewController : UISearchResultsUpdating{
     }
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         self.videos = []
-        getVideo(q: searchBar.text!)
-        self.tableView.reloadData()
+        self.offset = 0
+        getVideo(q: searchBar.text! ,offset: self.offset )
+//        self.tableView.reloadData()
     }
 }
+
 
