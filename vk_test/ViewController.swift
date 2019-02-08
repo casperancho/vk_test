@@ -47,7 +47,8 @@ class ViewController: UITableViewController, VKSdkDelegate,VKSdkUIDelegate, UISe
         super.viewDidLoad()
         navigationItem.title = "VK Video"
         navigationController?.navigationBar.prefersLargeTitles = true
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Logout", style: .plain, target: self, action: #selector(logOut(_:)))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Logout", style: .plain, target: self,
+                                                            action: #selector(logOut(_:)))
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellId)
         
         //поиск
@@ -83,7 +84,8 @@ class ViewController: UITableViewController, VKSdkDelegate,VKSdkUIDelegate, UISe
     func getVideo(q: String, offset: Int){
         self.q = q
         let video : VKRequest = VKApi.request(withMethod: "video.search",
-                                              andParameters: [ "q":String(q), "offset":String(offset), "count":String(count), "sort":"2"])
+                                              andParameters: [ "q":String(q), "offset":String(offset),
+                                                               "count":String(count), "sort":"2"])
         video.execute(resultBlock: { (response) -> Void in
             let videos = response?.json as! NSDictionary
             let items = videos["items"] as! NSArray
@@ -97,7 +99,7 @@ class ViewController: UITableViewController, VKSdkDelegate,VKSdkUIDelegate, UISe
     func addingVideo(video: NSArray){
         for i in 0...video.count-1{
             let current = video[i] as! NSDictionary
-            var new = Video(title: current["title"] as! String,
+            let new = Video(title: current["title"] as! String,
                             duration: current["duration"] as! Int,
                             picture: URL(string:(current["photo_320"] as! String))!,
                             urlVid: URL(string: current["player"] as! String)!)
@@ -133,10 +135,19 @@ class ViewController: UITableViewController, VKSdkDelegate,VKSdkUIDelegate, UISe
             cell.textLabel?.text = "\(indexPath.row) \(info.title)"
             return cell
         }
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let selectedVideo = videos[indexPath.row]
+        let PlayerVC = PlayerViewController()
+        PlayerVC.video = selectedVideo
+        navigationController?.pushViewController(PlayerVC, animated: true)
         
     }
     
+
 }
+
 
 
 extension ViewController : UISearchResultsUpdating{

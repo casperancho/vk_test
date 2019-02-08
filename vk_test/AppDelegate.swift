@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import AVKit
+import AVFoundation
 import VK_ios_sdk
 
 @UIApplicationMain
@@ -18,8 +20,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         window = UIWindow()
         window?.makeKeyAndVisible()
-        
         window?.rootViewController = UINavigationController(rootViewController: ViewController())
+        let mainNavigationController = MyNavigationController()
+        let playerVc = PlayerViewController()
+        let mainViewController = ViewController()
+        mainNavigationController.viewControllers = [mainViewController,playerVc]
+//        let audioSession = AVAudioSession.sharedInstance()
+//        do {
+//            try audioSession.setCategory(AVAudioSession.Category.playback)
+//        }
+//        catch {
+//            print("Setting category to AVAudioSessionCategoryPlayback failed.")
+//        }
         return true
     }
 

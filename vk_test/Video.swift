@@ -8,8 +8,8 @@
 
 import Foundation
 struct Video {
-    var title : String
-    var duration : Int
-    var picture : URL
-    var urlVid : URL
+    var title : String = ""
+    var duration : Int = 0
+    var picture : URL = URL(string: "vk.com")!
+    var urlVid : URL = URL(string: "vk.com")!
 }
