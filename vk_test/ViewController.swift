@@ -15,9 +15,9 @@ class ViewController: UITableViewController, VKSdkDelegate,VKSdkUIDelegate, UISe
     var vk_app_id = "6848921"
     var videos : [Video] = []
     let cellId = "vid"
-    var offset = 0
-    let count = 40
-    var q = ""
+    var offset = 0 //сдвиг для поиска
+    let count = 40 // количество подгржаемых
+    var q = "" //ключ поиска
     
     func vkSdkShouldPresent(_ controller: UIViewController!) {
         self.present(controller, animated: true, completion: nil)
@@ -57,7 +57,7 @@ class ViewController: UITableViewController, VKSdkDelegate,VKSdkUIDelegate, UISe
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Logout", style: .plain, target: self,
                                                             action: #selector(logOut(_:)))
         tableView.register(VideoCell.self, forCellReuseIdentifier: cellId)
-        
+         
         //поиск searchbar 11+
 //        let searchController = UISearchController(searchResultsController: nil)
 //        searchController.searchResultsUpdater = self
@@ -141,6 +141,7 @@ class ViewController: UITableViewController, VKSdkDelegate,VKSdkUIDelegate, UISe
     @objc func logOut(_ button:UIBarButtonItem!){
         VKSdk.forceLogout()
         print("пока")
+        callAlert()
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -176,6 +177,18 @@ class ViewController: UITableViewController, VKSdkDelegate,VKSdkUIDelegate, UISe
 //        navigationController?.pushViewController(PlayerVC, animated: true)
         
     }
+    
+    func callAlert(){
+        let alertView = UIAlertController(title: "See u again", message: nil, preferredStyle: .alert)
+        let login = UIAlertAction(title: "Login", style: .default) { (action) in
+            VKSdk.authorize(self.Scope)
+        }
+        self.present(alertView, animated: true, completion: {
+            print("Alert worked")
+        })
+        alertView.addAction(login)
+    }
+    
 }
 
 
