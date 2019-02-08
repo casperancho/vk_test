@@ -9,24 +9,30 @@
 import UIKit
 import VK_ios_sdk
 
-class ViewController: UITableViewController, VKSdkDelegate,VKSdkUIDelegate{
+class ViewController: UITableViewController, VKSdkDelegate,VKSdkUIDelegate, UISearchBarDelegate, UISearchControllerDelegate{
     let Scope = ["video"]
     var vk_app_id = "6848921"
     var videos : [Video] = []
     var videoCount = 0
     let testImage = UIImage()
     let cellId = "vid"
-    var token = ""
+    var offset = 0
+    let count = 40
+    
     
     func vkSdkShouldPresent(_ controller: UIViewController!) {
         self.present(controller, animated: true, completion: nil)
-//        self.navigationController!.topViewController!.present(controller, animated: true, completion: nil)
+
     }
     
     func vkSdkNeedCaptchaEnter(_ captchaError: VKError!) {}
     
     func vkSdkAccessAuthorizationFinished(with result: VKAuthorizationResult!) {
-        print("вошел")
+        if (result!.token != nil){
+            print("auth succes")
+        }else{
+            print(result.error)
+        }
     }
     
     func vkSdkUserAuthorizationFailed() {
@@ -43,6 +49,13 @@ class ViewController: UITableViewController, VKSdkDelegate,VKSdkUIDelegate{
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Logout", style: .plain, target: self, action: #selector(logOut(_:)))
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellId)
         
+        let searchController = UISearchController(searchResultsController: nil)
+//        searchController.searchResultsUpdater = self
+        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.searchBar.placeholder = "Search"
+        navigationItem.searchController = searchController
+        
+        definesPresentationContext = true
         
         let sdk = VKSdk.initialize(withAppId: self.vk_app_id)
         sdk!.register(self)
@@ -51,67 +64,36 @@ class ViewController: UITableViewController, VKSdkDelegate,VKSdkUIDelegate{
             error: Error?) ->Void in
             if state == .authorized {
                             print("все ок")
-                            self.getId()
+//                            self.getId()
                         } else {
                             print("войди")
-                            DispatchQueue.main.async {
+//                            DispatchQueue.main.async {
                                 VKSdk.authorize(self.Scope)
-                            }
+//                            }
                         }
             return
                     })
 
-        
     }
-//    override func viewDidAppear(_ animated: Bool) {
-//         self.getId()
-//    }
-//    override func viewWillAppear(_ animated: Bool) {
-//
-//    }
     
-//    @IBAction func click(_ sender: Any) {
-//
-//
-//        let sdk = VKSdk.initialize(withAppId: self.vk_app_id)
-//        sdk?.uiDelegate = self
-//        sdk!.register(self)
-//        VKSdk.wakeUpSession(Scope, complete: {(state: VKAuthorizationState, error: Error?) -> Void in
-//            if state == .authorized {
-//                print("yes")
-//            } else {
-//                VKSdk.authorize(self.Scope)
-//            }
-//            return
-//        })
-//
-//    }
-    
-    func getId(){
-//        let userId = String(VKSdk.accessToken()?.localUser.id as! Int)
-        let userAccessToken = VKSdk.accessToken()
-        let local = userAccessToken?.localUser
-        let id = local?.id
-        print("Получил id иду за видео")
-//        getVideo(ownner: userId)
-    }
 
-    func getVideo(ownner: String){
-        var video : VKRequest = VKApi.request(withMethod: "video.get", andParameters: ["owner_id": ownner])
+    func getVideo(){
+        let q = "UFC"
+        let video : VKRequest = VKApi.request(withMethod: "video.get",
+                                              andParameters: [ "q":q, "offset":String(offset), "count":String(count), "sort":"2"])
         video.execute(resultBlock: { (response) -> Void in
             let videos = response?.json as! NSDictionary
-            self.videoCount = videos["count"]! as! Int
             let items = videos["items"] as! NSArray
             self.addingVideo(video: items)
             },errorBlock: {(Error) -> Void in
-            print(Error)
+                print(Error!)
         })
         
     }
     
     func addingVideo(video: NSArray){
         for i in 0...video.count-1{
-            var current = video[i] as! NSDictionary
+            let current = video[i] as! NSDictionary
             var new = Video(title: current["title"] as! String,
                             duration: current["duration"] as! Int,
                             picture: URL(string:(current["photo_320"] as! String))!,
@@ -149,4 +131,11 @@ class ViewController: UITableViewController, VKSdkDelegate,VKSdkUIDelegate{
     }
     
 }
+
+
+//extension ViewController : UISearchResultsUpdating{
+//    func updateSearchResults(for searchController: UISearchController) {
+//        self.getVideo()
+//    }
+//}
 

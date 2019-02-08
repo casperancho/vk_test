@@ -13,6 +13,7 @@
 		7DA29DB8220ACC1000B6DA56 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7DA29DB7220ACC1000B6DA56 /* Assets.xcassets */; };
 		7DA29DBB220ACC1000B6DA56 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7DA29DB9220ACC1000B6DA56 /* LaunchScreen.storyboard */; };
 		7DFB6ABB220BA32400054B36 /* Video.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DFB6ABA220BA32400054B36 /* Video.swift */; };
+		7DFB6ABD220D078F00054B36 /* trash.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DFB6ABC220D078F00054B36 /* trash.swift */; };
 		B15E4F1C84E2CE588CB9A695 /* Pods_vk_test.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55D568A3F83D6DBAD959EEEB /* Pods_vk_test.framework */; };
 /* End PBXBuildFile section */
 
@@ -29,6 +30,7 @@
 		7DFB6AB7220B865400054B36 /* VKSdkFramework.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = VKSdkFramework.h; path = "../vk-ios-sdk/library/DynamicFramework/VKSdkFramework.h"; sourceTree = "<group>"; };
 		7DFB6AB9220B86FE00054B36 /* VKSdkFramework.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = VKSdkFramework.h; path = "../vk-ios-sdk/library/DynamicFramework/VKSdkFramework.h"; sourceTree = "<group>"; };
 		7DFB6ABA220BA32400054B36 /* Video.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Video.swift; sourceTree = "<group>"; };
+		7DFB6ABC220D078F00054B36 /* trash.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = trash.swift; sourceTree = "<group>"; };
 		CDC762EAC1F1E5555235EE41 /* Pods-vk_test.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-vk_test.release.xcconfig"; path = "Pods/Target Support Files/Pods-vk_test/Pods-vk_test.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -83,6 +85,7 @@
 				7DA29DB9220ACC1000B6DA56 /* LaunchScreen.storyboard */,
 				7DA29DBC220ACC1000B6DA56 /* Info.plist */,
 				7DFB6ABA220BA32400054B36 /* Video.swift */,
+				7DFB6ABC220D078F00054B36 /* trash.swift */,
 			);
 			path = vk_test;
 			sourceTree = "<group>";
@@ -215,6 +218,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7DFB6ABD220D078F00054B36 /* trash.swift in Sources */,
 				7DA29DB3220ACC0A00B6DA56 /* ViewController.swift in Sources */,
 				7DFB6ABB220BA32400054B36 /* Video.swift in Sources */,
 				7DA29DB1220ACC0A00B6DA56 /* AppDelegate.swift in Sources */,
