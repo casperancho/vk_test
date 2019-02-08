@@ -16,7 +16,7 @@ class ViewController: UITableViewController, VKSdkDelegate,VKSdkUIDelegate, UISe
     var videoCount = 0
     let testImage = UIImage()
     let cellId = "vid"
-    var offset = 0
+    var offset = 1
     let count = 40
     
     
@@ -50,10 +50,12 @@ class ViewController: UITableViewController, VKSdkDelegate,VKSdkUIDelegate, UISe
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellId)
         
         let searchController = UISearchController(searchResultsController: nil)
-//        searchController.searchResultsUpdater = self
+        searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchBar.placeholder = "Search"
         navigationItem.searchController = searchController
+        searchController.searchBar.returnKeyType = .done
+        searchController.searchBar.delegate = self
         
         definesPresentationContext = true
         
@@ -77,10 +79,10 @@ class ViewController: UITableViewController, VKSdkDelegate,VKSdkUIDelegate, UISe
     }
     
 
-    func getVideo(){
-        let q = "UFC"
-        let video : VKRequest = VKApi.request(withMethod: "video.get",
-                                              andParameters: [ "q":q, "offset":String(offset), "count":String(count), "sort":"2"])
+    func getVideo(q:String){
+        
+        let video : VKRequest = VKApi.request(withMethod: "video.search",
+                                              andParameters: [ "q":String(q), "offset":String(offset), "count":String(count), "sort":"2"])
         video.execute(resultBlock: { (response) -> Void in
             let videos = response?.json as! NSDictionary
             let items = videos["items"] as! NSArray
@@ -133,9 +135,12 @@ class ViewController: UITableViewController, VKSdkDelegate,VKSdkUIDelegate, UISe
 }
 
 
-//extension ViewController : UISearchResultsUpdating{
-//    func updateSearchResults(for searchController: UISearchController) {
-//        self.getVideo()
-//    }
-//}
+extension ViewController : UISearchResultsUpdating{
+    func updateSearchResults(for searchController: UISearchController) {
+//        print(searchController.searchBar.text!)
+    }
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        getVideo(q: searchBar.text!)
+    }
+}
 
